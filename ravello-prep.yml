@@ -1,0 +1,22 @@
+#!/usr/bin/ansible-playbook
+---
+# Alter Bare Metal Satellite host for use in Ravello environment
+- name: Prep Sat for Ravello
+  hosts: satellite.example.com
+  tasks:
+    - name: Turn off content synchronization
+      replace:
+        dest=/opt/theforeman/tfm/root/usr/share/gems/gems/fusor_server-1.1.43/app/lib/actions/fusor/content/manage_content.rb
+        regexp='^.*SyncRepositories.*$'
+        replace='# Removed for Ravello Prep'
+    - name: Clear exports directories
+      shell: rm -rf /var/lib/exports/*/*
+    - name: Change NTP server if it is set to the internal
+      replace:
+        dest=/etc/ntp.conf
+        regexp='clock.redhat.com'
+        replace='0.rhel.pool.ntp.org'
+    - name: Insert cpu_map XSLT code
+      script: hammer-script.sh
+      args:
+        creates: /root/cpu_map_xml

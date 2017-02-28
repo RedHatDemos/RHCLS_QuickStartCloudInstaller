@@ -1,0 +1,29 @@
+#!/usr/bin/ansible-playbook
+---
+# Blow away QCI environment and start from scratch.
+# Zero out the virtual hard disks and reboot
+- name: Kill old VMs
+  hosts: vms
+  tags:
+    - teardown
+  tasks:
+  - name: run dd
+    command: /usr/bin/dd if=/dev/zero of=/dev/vda bs=1M count=2
+  - name: restart
+    shell: sleep 2 && /usr/sbin/shutdown -r now Taking off and nuking the site from orbit
+    async: 1
+    poll: 0
+    ignore_errors: yes
+
+- name: Wait for VMs to get reinstalled
+  hosts: localhost
+  tasks:
+  - name: wait for satellite to come back
+    local_action: wait_for host=satellite.example.com state=started port=443 delay=600
+  - name: wait for undercloud to come back
+    local_action: wait_for host=undercloud.example.com state=started port=22
+
+- include: install-keys.yml
+- include: reset-blades.yml
+- include: satellite-setup.yml
+...

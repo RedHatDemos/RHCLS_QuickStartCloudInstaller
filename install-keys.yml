@@ -1,0 +1,14 @@
+#!/usr/bin/ansible-playbook
+---
+# Drop ssh authorized keys in /root/.ssh on VM nodes.
+- name: Copy ssh keys
+  hosts: vms_firstrun
+  tags:
+    - setup
+  tasks:
+  - name: create authorized_key
+    authorized_key:
+      user: root
+      exclusive: yes
+      key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJiueGJqCn/B256z6QAN3cPXXa8vRDNJFHEUDCDMwz7WTfoMN6qaPC4kzH1rOQJ/A6EyJav2x+rolllb7kuqohfip+9LPBF16zznakCKDxwScwE5iWSvc1uPgZLsNXx9QZRjTw6AvCk/G/Y533/LXGDao5DjbEDC7b4d/ubWzrO1BsU+KKO0zIgyiietu7d1b6fdTzjoJ69sVX2On/Jz4YvfucjusBAuQZO9iPlMTFFJw6mpujskJDueB0JJbSOvX2f/eiGCJSW+nfpbMflLd/6WnDqjflwuEJQmfl3uLVq2hq5eKxZnWN0jbYTsakRcdVIk461MgNEqNAjbjiOcyX root@qci-ws.cloud.lab.eng.bos.redhat.com
+...
