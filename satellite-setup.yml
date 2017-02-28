@@ -1,0 +1,10 @@
+#!/usr/bin/ansible-playbook
+---
+- name: NFS setup
+  hosts: satellite.example.com
+  tags:
+    - setup
+  tasks:
+  - name: Run fusor-local-nfs-setup
+    shell: /usr/bin/fusor-local-nfs-setup creates=/var/lib/exports/vms
+...

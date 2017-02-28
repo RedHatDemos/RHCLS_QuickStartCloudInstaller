@@ -1,0 +1,29 @@
+#!/usr/bin/ansible-playbook
+---
+# Reset RHV nodes so they come up looking for their satellite
+# Ensure OSP nodes are shut down
+
+- name: play to set up blades for QCI
+  hosts: control
+  tags:
+    - setup
+  tasks:
+  - name: reboot rhv nodes
+    ipmi_power:
+      name: "{{ item }}"
+      user: root
+      password: calvin
+      state: boot
+    with_items:
+      - rhv1.lom.example.com
+      - rhv2.lom.example.com
+  - name: down osp nodes
+    ipmi_power:
+      name: "{{ item }}"
+      user: root
+      password: calvin
+      state: off
+    with_items:
+      - osn1.lom.example.com
+      - osn2.lom.example.com
+...
